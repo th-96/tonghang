@@ -1,0 +1,125 @@
+// void  CCSP_Decrypt_AutoTest(struct test_cast_list_st *test_cast_list_Decrypt, int row)
+// {
+// 			char id[MM_BUFLEN] = { 0 };
+// 			char connHandle[MM_BUFLEN] = { 0 };
+// 			char keyContext[MM_BUFLEN] = { 0 };
+// 			char alg_enc[MM_BUFLEN] = { 0 };
+// 			char elg_enc[MM_BUFLEN] = { 0 };
+// 			char iv_enc[MM_BUFLEN] = { 0 };
+// 			char iv_enc_len[MM_BUFLEN] = { 0 };
+// 			char alg_dec[MM_BUFLEN] = { 0 };
+// 			char elg_dec[MM_BUFLEN] = { 0 };
+// 			char iv_dec[MM_BUFLEN] = { 0 };
+// 			char enc_Data[MM_BUFLEN] = { 0 };
+// 			char enc_DataLength[MM_BUFLEN] = { 0 };
+// 			char output_Data[MM_BUFLEN] = { 0 };
+// 			//char output_DataLength[MM_BUFLEN] = { 0 };
+
+// 			//char case_type[MM_BUFLEN] = { 0 };
+// 			char expect_result[MM_BUFLEN] = { 0 };
+// 			char marks[MIN_BUFLEN] = { 0 };
+
+// 			SessionKeyContext hkeyContext;
+// 			/*密文*/
+// 			char pEncData[MIN_BUFLEN] = {0};
+// 			/*明文*/
+// 			char *pData[64] = {0};
+// 			char *pIv[16] = {0};
+// 			unsigned int Output_enc_DataLength = 0;
+// 			unsigned int Output_dec_DataLength = 0;
+// 			char *pDecData[MIN_BUFLEN] = {0};
+// 			int i = 0;
+// 			for (i = 0; i < row; i++)
+// 			{
+
+// 				strcpy(id, test_cast_list_Decrypt[i].str[1]);
+// 				strcpy(connHandle, test_cast_list_Decrypt[i].str[2]);
+// 				strcpy(keyContext, test_cast_list_Decrypt[i].str[3]);
+// 				strcpy(alg_enc, test_cast_list_Decrypt[i].str[4]);
+// 				strcpy(elg_enc, test_cast_list_Decrypt[i].str[5]);
+// 				strcpy(iv_enc, test_cast_list_Decrypt[i].str[6]);
+// 				strcpy(iv_enc_len, test_cast_list_Decrypt[i].str[7]);
+// 				strcpy(alg_dec, test_cast_list_Decrypt[i].str[8]);
+// 				strcpy(elg_dec, test_cast_list_Decrypt[i].str[9]);
+// 				strcpy(iv_dec, test_cast_list_Decrypt[i].str[10]);
+// 				strcpy(enc_Data, test_cast_list_Decrypt[i].str[10]);
+// 				strcpy(enc_DataLength, test_cast_list_Decrypt[i].str[10]);
+// 				strcpy(output_Data, test_cast_list_Decrypt[i].str[10]);
+// 				strcpy(expect_result, test_cast_list_Decrypt[i].str[10]);
+// 				strcpy(marks, test_cast_list_Decrypt[i].str[10]);
+// 				//hkeyContext = (SessionKeyContext)malloc(sizeof(SessionKeyContext));
+// 				//if(hkeyContext)
+// 				//{
+// 				memset(&hkeyContext, 0, sizeof(SessionKeyContext));
+// 				//}
+// 				// else
+// 				// {
+// 				// 	continue;
+// 				// }
+
+// 				/*获取会话密钥结构体*/
+				
+// 				rv = CCSP_GenerateKeyWithKEK(hconnHandle, "testapp01AES", htoi("0x00002002"), 64, &hkeyContext);
+// 				if (rv != CCSP_SUCCESS)
+// 				{
+// 					swLog(rv, CCSP_SUCCESS, "[接口名称:CCSP_GenerateKeyWithKEK] [用例编号:%s] [用例详情:CCSP_GenerateKeyWithKEK->rv is NULL]", id);
+// 					continue;
+// 				}
+
+// 				/*产生随机数作为iv*/
+// 				rv = CCSP_GenerateRandom(hconnHandle, atoi(iv_enc_len), (unsigned char *)pIv);
+// 				if (rv != CCSP_SUCCESS)
+// 				{
+// 					swLog(rv, CCSP_SUCCESS, "[接口名称:CCSP_GenerateRandom] [用例编号:%s] [用例详情:CCSP_GenerateRandom_iv->rv is NULL]", id);
+// 					continue;
+// 				}
+// 				/*生成明文数据*/
+// 				rv = CCSP_GenerateRandom(hconnHandle, 64, (unsigned char *)(pData));
+// 				if (rv != CCSP_SUCCESS)
+// 				{
+// 					swLog(rv, CCSP_SUCCESS, "[接口名称:CCSP_GenerateRandom] [用例编号:%s] [用例详情:CCSP_GenerateRandom_data->rv is NULL]", id);
+// 					continue;
+// 				}
+
+// 				/*对称加密生成密文*/
+
+// 				rv = CCSP_Encrypt(hconnHandle, &hkeyContext, htoi(alg_enc), (unsigned char *)pIv, (unsigned char *)(pData), 32, (unsigned char *)pEncData, &Output_enc_DataLength);
+// 				if (rv != CCSP_SUCCESS)
+// 				{
+// 					swLog(rv, CCSP_SUCCESS, "[接口名称:CCSP_Encrypt] [用例编号:%s] [用例详情:CCSP_Encrypt->rv is NULL]", id);
+// 					continue;
+// 				}
+
+// 				if (strcmp(connHandle, "NULL") == 0)
+// 				{
+// 					rv = CCSP_Decrypt(NULL, &hkeyContext, htoi(alg_dec), (unsigned char *)pIv, (unsigned char *)pEncData, atoi(enc_DataLength), (unsigned char *)pDecData, &Output_dec_DataLength);
+// 				}
+// 				else if (strcmp(keyContext, "NULL") == 0)
+// 				{
+// 					rv = CCSP_Decrypt(hconnHandle, NULL, htoi(alg_dec), (unsigned char *)pIv, (unsigned char *)pEncData, atoi(enc_DataLength), (unsigned char *)pDecData, &Output_dec_DataLength);
+// 				}
+// 				else if (strcmp(iv_dec, "NULL") == 0)
+// 				{
+// 					rv = CCSP_Decrypt(hconnHandle, &hkeyContext, htoi(alg_dec), NULL, (unsigned char *)pEncData, atoi(enc_DataLength), (unsigned char *)pDecData, &Output_dec_DataLength);
+// 				}
+// 				else if (strcmp(iv_dec, "error") == 0)
+// 				{
+// 					memset(pIv, '0', 32 * sizeof(char));
+// 					rv = CCSP_Decrypt(hconnHandle, &hkeyContext, htoi(alg_dec), (unsigned char *)pIv, (unsigned char *)pEncData, atoi(enc_DataLength), (unsigned char *)pDecData, &Output_dec_DataLength);
+// 				}
+// 				else if (strcmp(enc_Data, "NULL") == 0)
+// 				{
+// 					rv = CCSP_Decrypt(hconnHandle, &hkeyContext, htoi(alg_dec), (unsigned char *)pIv, NULL, atoi(enc_DataLength), (unsigned char *)pDecData, &Output_dec_DataLength);
+// 				}
+// 				else if (strcmp(output_Data, "NULL") == 0)
+// 				{
+// 					rv = CCSP_Decrypt(hconnHandle, &hkeyContext, htoi(alg_dec), (unsigned char *)pIv, (unsigned char *)pEncData, atoi(enc_DataLength), NULL, &Output_dec_DataLength);
+// 				}
+// 				else
+// 				{
+// 					rv = CCSP_Decrypt(hconnHandle, &hkeyContext, htoi(alg_dec), (unsigned char *)pIv, (unsigned char *)pEncData, atoi(enc_DataLength), (unsigned char *)pDecData, &Output_dec_DataLength);
+// 				}
+
+// 				swLog(rv, htoi(expect_result), "[接口名称:CCSP_Encrypt] [用例编号:%s] [用例详情:%s]", id, marks);
+// 			}
+// }
